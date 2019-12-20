@@ -23,8 +23,82 @@ def dayOne():
 	test = [12,14,1969,100756,16,17]
 	result = parseInput(input)
 	print(result)
+    
+targetVal = 19690720
 
-def dayTwo():
-	print("Day 2")
+def doAction(operation, code, paramOne, paramTwo, outputPlace):
+    if(outputPlace >= len(code)): 
+        return outputPlace
 
-	input = [1,0,0,3,1,1,2,3,1,3,4,3,1,5,0,3,2,10,1,19,1,19,9,23,1,23,13,27,1,10,27,31,2,31,13,35,1,10,35,39,2,9,39,43,2,43,9,47,1,6,47,51,1,10,51,55,2,55,13,59,1,59,10,63,2,63,13,67,2,67,9,71,1,6,71,75,2,75,9,79,1,79,5,83,2,83,13,87,1,9,87,91,1,13,91,95,1,2,95,99,1,99,6,0,99,2,14,0,0]
+    if operation == 1:
+        add1 = code[paramOne]
+        add2 = code[paramTwo]
+        total = add1 + add2
+        code[outputPlace] = total
+
+    elif operation == 2:
+        mult1 = code[paramOne]
+        mult2 = code[paramTwo]
+        total = mult1 * mult2
+        code[outputPlace] = total
+
+    return 0
+
+def interpretCode(code):
+    placeinCode = 0;
+
+    while True:
+        opCode = code[placeinCode]
+        if(opCode == 99):
+            break
+        firstValue = code[placeinCode+1]
+        secondValue = code[placeinCode+2]
+        outputPlace = code[placeinCode+3]
+        error = doAction(opCode, code, firstValue, secondValue, outputPlace)
+        if(error != 0): return error
+        placeinCode += 4
+    return code[0]
+    
+def GetValueOfCode(input1, input2, code):
+    code[1] = input1
+    code[2] = input2
+    output = interpretCode(code)
+    result = [output,input1,input2, abs(targetVal - output)]
+    return result
+
+def dayTwo(input):
+    
+    def partOne():
+        print("Day 2 - Part 1")
+
+
+        interpretCode(input)
+        
+        print(input)
+        print ("All Done")
+        print(input[0])
+
+    def IsGettingCloser(current, last, target):
+        return abs(target-current) < abs(target-last)
+
+    def FindParameterValues(code):
+
+        for input1 in range(0,100):
+            for input2 in range(0,100):
+                print("Using " + str(input1) + " and " + str(input2))
+                result = GetValueOfCode(input1,input2,list(code))
+
+                print("Result: " + str(result))
+                if(result[3] == 0): 
+                    return "Used " + str(input1) + " and " + str(input2) + " to get: " + str(result) + " for an answer of: " + str(100 * input1 + input2)
+
+    def partTwo(code):
+        
+        return FindParameterValues(code)
+
+    return partTwo(input)
+
+#input = [1,0,0,3,1,1,2,3,1,3,4,3,1,5,0,3,2,10,1,19,1,19,9,23,1,23,13,27,1,10,27,31,2,31,13,35,1,10,35,39,2,9,39,43,2,43,9,47,1,6,47,51,1,10,51,55,2,55,13,59,1,59,10,63,2,63,13,67,2,67,9,71,1,6,71,75,2,75,9,79,1,79,5,83,2,83,13,87,1,9,87,91,1,13,91,95,1,2,95,99,1,99,6,0,99,2,14,0,0]
+
+#dayTwoResult = dayTwo(input)
+#print("DayTwo part 2 : " + str(dayTwoResult))
